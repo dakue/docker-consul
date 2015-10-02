@@ -1,0 +1,16 @@
+{
+  "bootstrap_expect": ${CONSUL_BOOTSTRAP_EXPECT:-1},
+  "datacenter": "${CONSUL_DATACENTER:-dc1}",
+  "data_dir": "/opt/consul/data",
+  "ui_dir": "/opt/consul/ui",
+  "client_addr": "${CONSUL_CLIENT_ADDR:-0.0.0.0}",
+  "server": ${CONSUL_SERVER:-true},
+  "log_level": "${CONSUL_LOG_LEVEL:-INFO}",
+  "enable_syslog": ${CONSUL_ENABLE_SYSLOG:-false},
+  "advertise_addr": "",
+  "start_join": [],
+  "ports": {
+    "dns": 53
+  },
+  "recursor": "${CONSUL_RECURSOR:-8.8.8.8}"
+}
