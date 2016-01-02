@@ -1,8 +1,8 @@
-FROM alpine:3.2
+FROM alpine:latest
 
-ENV CONSUL_VERSION=0.5.2 \
+ENV CONSUL_VERSION=0.6.0 \
   CONSUL_HOME="/opt/consul" \
-  GOSU_VERSION=1.4 \
+  GOSU_VERSION=1.7 \
   ENVPLATE_VERSION=0.0.8
 
 RUN set -x && \ 
@@ -19,21 +19,21 @@ RUN set -x && \
   ln -s /usr/local/bin/ep /usr/local/bin/envplate
 
 RUN set -x && \
-  curl -sSL "https://dl.bintray.com/mitchellh/consul/${CONSUL_VERSION}_linux_amd64.zip" -o /tmp/${CONSUL_VERSION}_linux_amd64.zip && \
-  curl -sSL "https://dl.bintray.com/mitchellh/consul/${CONSUL_VERSION}_web_ui.zip" -o /tmp/${CONSUL_VERSION}_web_ui.zip && \
-  curl -sSL "https://dl.bintray.com/mitchellh/consul/${CONSUL_VERSION}_SHA256SUMS?direct" -o /tmp/${CONSUL_VERSION}_SHA256SUMS && \
-  grep 'linux_amd64.zip' /tmp/${CONSUL_VERSION}_SHA256SUMS | sed "s|${CONSUL_VERSION}|/tmp/${CONSUL_VERSION}|g" > /tmp/consul.sha256 && \
+  curl -sSL "https://releases.hashicorp.com/consul/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_linux_amd64.zip" -o /tmp/consul_${CONSUL_VERSION}_linux_amd64.zip && \
+  curl -sSL "https://releases.hashicorp.com/consul/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_web_ui.zip" -o /tmp/consul_${CONSUL_VERSION}_web_ui.zip && \
+  curl -sSL "https://releases.hashicorp.com/consul/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_SHA256SUMS" -o /tmp/consul_${CONSUL_VERSION}_SHA256SUMS && \
+  grep 'linux_amd64.zip' /tmp/consul_${CONSUL_VERSION}_SHA256SUMS | sed "s|consul_${CONSUL_VERSION}|/tmp/consul_${CONSUL_VERSION}|g" > /tmp/consul.sha256 && \
   sha256sum -c /tmp/consul.sha256 && \
   cd /usr/local/bin && \
-  unzip /tmp/${CONSUL_VERSION}_linux_amd64.zip && \
+  unzip /tmp/consul_${CONSUL_VERSION}_linux_amd64.zip && \
   chmod +x /usr/local/bin/consul && \
   mkdir -p ${CONSUL_HOME} && \
   mkdir -p ${CONSUL_HOME}/data && \
   mkdir -p ${CONSUL_HOME}/config && \
-  cd ${CONSUL_HOME} && \
-  unzip /tmp/${CONSUL_VERSION}_web_ui.zip && \
-  mv dist ui && \
-  rm /tmp/${CONSUL_VERSION}_linux_amd64.zip /tmp/${CONSUL_VERSION}_web_ui.zip /tmp/${CONSUL_VERSION}_SHA256SUMS
+  mkdir -p ${CONSUL_HOME}/ui && \
+  cd ${CONSUL_HOME}/ui && \
+  unzip /tmp/consul_${CONSUL_VERSION}_web_ui.zip && \
+  rm /tmp/consul_${CONSUL_VERSION}_linux_amd64.zip /tmp/consul_${CONSUL_VERSION}_web_ui.zip /tmp/consul_${CONSUL_VERSION}_SHA256SUMS /tmp/consul.sha256
 
 ADD consul.json.tmpl ${CONSUL_HOME}/config/consul.json
 
