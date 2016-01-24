@@ -9,5 +9,6 @@ dependencies:
 
 test:
   override:
-    - docker run -d -p 8500:8500 dakue/consul; sleep 10
+    - docker run -d -p 8500:8500 dakue/consul
+    - ( i=0; until nc -w 1 -q 0 localhost 8500; do echo $i; test $i -ge 5 && break; sleep 5; ((i++)); done ) || exit 0
     - curl --retry 10 --retry-delay 5 -v http://localhost:8500/ui/
